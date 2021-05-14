@@ -18,6 +18,7 @@ import GoogleIcon from 'src/icons/Google';
 import { login } from 'src/services/CustomerService';
 import { useState } from 'react';
 
+const client = process.env.REACT_APP_CLIENT_PATH;
 // eslint-disable-next-line react/prop-types
 const Login = ({ setToken }) => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const Login = ({ setToken }) => {
               const token = await login(reqBody);
               if (token) {
                 setToken(token);
-                window.location = '/app/dashboard';
+                window.location = `${client}/app/dashboard`;
               }
             }}
           >
@@ -178,7 +179,7 @@ const Login = ({ setToken }) => {
                   {' '}
                   <Link
                     component={RouterLink}
-                    to="/register"
+                    to={`${client}/register`}
                     variant="h6"
                   >
                     Sign up

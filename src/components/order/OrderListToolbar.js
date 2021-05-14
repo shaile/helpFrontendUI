@@ -8,9 +8,9 @@ import {
   SvgIcon
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
+import PropTypes from 'prop-types';
 
-// eslint-disable-next-line react/prop-types
-const CustomerListToolbar = ({ searchText, onTitleChange }) => (
+const OrderListToolbar = ({ searchText, onTitleChange }) => (
   <Box {...searchText}>
     <Box sx={{ mt: 3 }}>
       <Card>
@@ -21,16 +21,13 @@ const CustomerListToolbar = ({ searchText, onTitleChange }) => (
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SvgIcon
-                      fontSize="small"
-                      color="action"
-                    >
+                    <SvgIcon fontSize="small" color="action">
                       <SearchIcon />
                     </SvgIcon>
                   </InputAdornment>
                 )
               }}
-              placeholder="Search customer"
+              placeholder="Search Order"
               variant="outlined"
               value={searchText}
               onChange={onTitleChange}
@@ -41,4 +38,9 @@ const CustomerListToolbar = ({ searchText, onTitleChange }) => (
     </Box>
   </Box>
 );
-export default CustomerListToolbar;
+
+OrderListToolbar.propTypes = {
+  searchText: PropTypes.string,
+  onTitleChange: PropTypes.func
+};
+export default OrderListToolbar;

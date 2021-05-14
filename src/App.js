@@ -30,9 +30,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <UserContext.Provider value={value}>
-        {routing}
-      </UserContext.Provider>
+      <UserContext.Provider value={value}>{routing}</UserContext.Provider>
     </ThemeProvider>
   );
 };

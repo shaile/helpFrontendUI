@@ -1,5 +1,11 @@
+/* eslint-disable object-curly-newline */
+/* eslint-disable react/jsx-curly-newline */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable operator-linebreak */
 /* eslint linebreak-style: ["error", "windows"] */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -17,11 +23,13 @@ import {
   Typography
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
+import { Link } from 'react-router-dom';
 
-const CustomerListResults = ({ customers, ...rest }) => {
+const CustomerListResults = ({ customersData, ...rest }) => {
+  const rowsPerPageOptions = process.env.REACT_APP_ROW_PER_PAGE;
+  const { page, limit, handlePageChange, handleLimitChange } = rest;
+  const { docs: customers, totalDocs, nextPage } = customersData;
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -40,11 +48,18 @@ const CustomerListResults = ({ customers, ...rest }) => {
     let newSelectedCustomerIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds,
+        id
+      );
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds.slice(1)
+      );
     } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds.slice(0, -1)
+      );
     } else if (selectedIndex > 0) {
       newSelectedCustomerIds = newSelectedCustomerIds.concat(
         selectedCustomerIds.slice(0, selectedIndex),
@@ -55,119 +70,120 @@ const CustomerListResults = ({ customers, ...rest }) => {
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
 
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
-
   return (
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>
-                  Name
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Location
-                </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  Registration date
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {customers.slice(0, limit).map((customer) => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-                >
+          {customers && (
+            <Table>
+              <TableHead>
+                <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
-                      value="true"
+                      checked={selectedCustomerIds.length === customers.length}
+                      color="primary"
+                      indeterminate={
+                        selectedCustomerIds.length > 0 &&
+                        selectedCustomerIds.length < customers.length
+                      }
+                      onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Avatar
-                        src={customer.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {customer.email}
-                  </TableCell>
-                  <TableCell>
-                    {`${(customer.address && customer.address.city) ? customer.address.city : 'N/A'},
-                     ${(customer.address && customer.address.state) ? customer.address.state : 'N/A'},
-                     ${(customer.address && customer.address.country) ? customer.address.country : 'N/A'}`}
-                  </TableCell>
-                  <TableCell>
-                    {customer.phone}
-                  </TableCell>
-                  <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
-                  </TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Location</TableCell>
+                  <TableCell>Phone</TableCell>
+                  <TableCell>Registration date</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {customers.slice(0, limit).map((customer) => (
+                  <TableRow
+                    hover
+                    key={customer.id}
+                    selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={
+                          selectedCustomerIds.indexOf(customer.id) !== -1
+                        }
+                        onChange={(event) =>
+                          handleSelectOne(event, customer.id)
+                        }
+                        value="true"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                        <Avatar src={customer.avatarUrl} sx={{ mr: 2 }}>
+                          {getInitials(customer.name)}
+                        </Avatar>
+                        <Typography color="textPrimary" variant="body1">
+                          {customer.name}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>
+                      {`${
+                        customer.address && customer.address.city
+                          ? customer.address.city
+                          : 'N/A'
+                      },
+                     ${
+                       customer.address && customer.address.state
+                         ? customer.address.state
+                         : 'N/A'
+                     },
+                     ${
+                       customer.address && customer.address.country
+                         ? customer.address.country
+                         : 'N/A'
+                     }`}
+                    </TableCell>
+                    <TableCell>{customer.phone}</TableCell>
+                    <TableCell>
+                      {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        component={Link}
+                        to={`/app/orders/${customer._id}/`}
+                        key={customer._id}
+                      >
+                        Orders
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={customers.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
+      {totalDocs && (
+        <TablePagination
+          component="div"
+          count={totalDocs}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleLimitChange}
+          page={page}
+          rowsPerPage={limit}
+          rowsPerPageOptions={[2, 3, 5]}
+        />
+      )}
     </Card>
   );
 };
 
 CustomerListResults.propTypes = {
-  customers: PropTypes.array.isRequired
+  customersData: PropTypes.object.isRequired
 };
 
 export default CustomerListResults;

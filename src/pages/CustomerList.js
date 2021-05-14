@@ -9,17 +9,28 @@ import { fetchUsers } from 'src/services/CustomerService';
 const CustomerList = () => {
   const [customers, setCustomers] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [limit, setLimit] = useState(2);
+  const [page, setPage] = useState(1);
+
+  const handleLimitChange = (event) => {
+    setLimit(event.target.value);
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
   function handleTitleChange(e) {
     setSearchText(e.target.value);
   }
 
   const getUserList = async () => {
-    const userList = await fetchUsers(searchText);
+    const userList = await fetchUsers(searchText, page, limit);
     setCustomers(userList);
   };
   useEffect(() => {
     getUserList();
-  }, [searchText]);
+  }, [searchText, limit, page]);
   return (
     <>
       <Helmet>
@@ -33,9 +44,18 @@ const CustomerList = () => {
         }}
       >
         <Container maxWidth={false}>
-          <CustomerListToolbar onTitleChange={handleTitleChange} searchText={searchText} />
+          <CustomerListToolbar
+            onTitleChange={handleTitleChange}
+            searchText={searchText}
+          />
           <Box sx={{ pt: 3 }}>
-            <CustomerListResults customers={customers} />
+            <CustomerListResults
+              customersData={customers}
+              handleLimitChange={handleLimitChange}
+              handlePageChange={handlePageChange}
+              page={page}
+              limit={limit}
+            />
           </Box>
         </Container>
       </Box>

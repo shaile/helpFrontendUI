@@ -39,9 +39,9 @@ const items = [
     title: 'Customers'
   },
   {
-    href: '/app/products',
+    href: '/app/orders',
     icon: ShoppingBagIcon,
-    title: 'Products'
+    title: 'Orders'
   },
   {
     href: '/app/account',

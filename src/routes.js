@@ -10,6 +10,7 @@ import NotFound from 'src/pages/NotFound';
 import ProductList from 'src/pages/ProductList';
 import Register from 'src/pages/Register';
 import Settings from 'src/pages/Settings';
+import OrderList from 'src/pages/OrderList';
 
 const routes = ({ token, setToken }) => [
   {
@@ -21,6 +22,8 @@ const routes = ({ token, setToken }) => [
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <ProductList /> },
       { path: 'settings', element: <Settings /> },
+      { path: 'orders/:userId', element: <OrderList /> },
+      { path: 'orders', element: <OrderList /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },

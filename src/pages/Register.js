@@ -190,7 +190,7 @@ const Register = () => {
                   {' '}
                   <Link
                     component={RouterLink}
-                    to="/login"
+                    to={`${client}/login`}
                     variant="h6"
                   >
                     Sign in
