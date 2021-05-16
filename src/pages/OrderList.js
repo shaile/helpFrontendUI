@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { Helmet } from 'react-helmet';
 // eslint-disable-next-line object-curly-newline
 import { Box, Container, Grid } from '@material-ui/core';
@@ -5,24 +6,22 @@ import { useEffect, useState } from 'react';
 import CustomerCard from 'src/components/customer/CustomerCard';
 import { fetchOrders, fetchOrderByUserId } from 'src/services/OrderService';
 import { fetchUserById } from 'src/services/CustomerService';
-import CircularUnderLoad from 'src/utils/circularUnderLoad';
 import OrderListToolbar from 'src/components/order/OrderListToolbar';
-import OrderListResults from 'src/components/order/OrderListResults';
 import { useParams } from 'react-router';
+import OrderListResults from 'src/components/order/OrderListResults';
 
 const OrderList = () => {
   const { userId } = useParams();
   const [user, setUser] = useState('');
   const [orders, setOrders] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   function handleTitleChange(e) {
     setSearchText(e.target.value);
   }
 
   const handlePageChange = async (event, newPage) => {
-    console.log(event, 'wwwww');
     setPage(newPage);
   };
 
@@ -44,8 +43,7 @@ const OrderList = () => {
 
   useEffect(() => {
     getOrders();
-    console.log('#############', limit);
-  }, [userId, limit]);
+  }, [searchText, limit, page]);
 
   return (
     <>
@@ -75,17 +73,13 @@ const OrderList = () => {
             searchText={searchText}
           />
           <Box sx={{ pt: 12 }}>
-            {orders && orders.length > 0 ? (
-              <OrderListResults
-                orders={orders}
-                handlePageChange={handlePageChange}
-                handleLimitChange={handleLimitChange}
-                page={page}
-                limit={limit}
-              />
-            ) : (
-              <CircularUnderLoad />
-            )}
+            <OrderListResults
+              ordersData={orders}
+              handlePageChange={handlePageChange}
+              handleLimitChange={handleLimitChange}
+              page={page}
+              limit={limit}
+            />
           </Box>
         </Container>
       </Box>

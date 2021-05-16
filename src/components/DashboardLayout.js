@@ -2,8 +2,10 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { experimentalStyled } from '@material-ui/core';
+import getPermissions from 'src/auth/getPermission';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import UserDashboardSidebar from './UserDashboardSidebar';
 
 const DashboardLayoutRoot = experimentalStyled('div')(
   ({ theme }) => ({
@@ -41,14 +43,21 @@ const DashboardLayoutContent = experimentalStyled('div')({
 
 const DashboardLayout = () => {
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-
+  const role = getPermissions();
   return (
     <DashboardLayoutRoot>
       <DashboardNavbar onMobileNavOpen={() => setMobileNavOpen(true)} />
-      <DashboardSidebar
-        onMobileClose={() => setMobileNavOpen(false)}
-        openMobile={isMobileNavOpen}
-      />
+      {(role === 'admin') ? (
+        <DashboardSidebar
+          onMobileClose={() => setMobileNavOpen(false)}
+          openMobile={isMobileNavOpen}
+        />
+      ) : (
+        <UserDashboardSidebar
+          onMobileClose={() => setMobileNavOpen(false)}
+          openMobile={isMobileNavOpen}
+        />
+      )}
       <DashboardLayoutWrapper>
         <DashboardLayoutContainer>
           <DashboardLayoutContent>

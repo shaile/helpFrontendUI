@@ -1,3 +1,5 @@
+import getPermissions from 'src/auth/getPermission';
+
 /* eslint linebreak-style: ["error", "windows"] */
 const apiUrl = process.env.REACT_APP_API_URL;
 const localToken = localStorage.getItem('token');
@@ -6,6 +8,8 @@ const headers = {
   'Content-Type': 'application/json',
   Authorization: `Bearer ${token}`
 };
+const roles = getPermissions();
+const assignmentApiUrl = (roles === 'admin') ? 'api/assignment' : 'api/myorders';
 
 export const fetchOrders = async (searchText, page, limit) => {
   const requestOptions = {
@@ -13,7 +17,7 @@ export const fetchOrders = async (searchText, page, limit) => {
     headers
   };
   return fetch(
-    `${apiUrl}api/assignment?searchText=${searchText}&page=${page}&limit=${limit}`,
+    `${apiUrl}${assignmentApiUrl}?searchText=${searchText}&page=${page}&limit=${limit}`,
     requestOptions
   )
     .then((res) => res.json())

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable object-curly-newline */
 /* eslint-disable operator-linebreak */
 /* eslint linebreak-style: ["error", "windows"] */
@@ -9,6 +10,7 @@ import {
   Box,
   Card,
   Checkbox,
+  CircularProgress,
   Table,
   TableBody,
   TableCell,
@@ -17,15 +19,11 @@ import {
   TableRow,
   Typography
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
-const OrderListResults = ({
-  orders,
-  handlePageChange,
-  page,
-  limit,
-  handleLimitChange,
-  ...rest
-}) => {
+const OrderListResults = ({ ordersData, ...rest }) => {
+  const { page, limit, handlePageChange, handleLimitChange } = rest;
+  const { docs: orders, totalDocs } = ordersData;
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
 
   const handleSelectAll = (event) => {
@@ -71,86 +69,116 @@ const OrderListResults = ({
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === orders.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0 &&
-                      selectedCustomerIds.length < orders.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>Topic</TableCell>
-                <TableCell>Subject</TableCell>
-                <TableCell>Document Type</TableCell>
-                <TableCell>Academic Level</TableCell>
-                <TableCell>Dead Line</TableCell>
-                <TableCell>Order Date</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {orders.slice(0, limit).map((customer) => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-                >
+          {orders && orders.length > 0 ? (
+            <Table>
+              <TableHead>
+                <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
-                      value="true"
+                      checked={selectedCustomerIds.length === orders.length}
+                      color="primary"
+                      indeterminate={
+                        selectedCustomerIds.length > 0 &&
+                        selectedCustomerIds.length < orders.length
+                      }
+                      onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography color="textPrimary" variant="body1">
-                        {customer.topic}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{customer.subject}</TableCell>
-                  <TableCell>{customer.documentType}</TableCell>
-                  <TableCell>{customer.academicLevel}</TableCell>
-                  <TableCell>{customer.deadLine}</TableCell>
-                  <TableCell>
-                    {moment(customer.createdOn).format('DD-MM-YYYY')}
-                  </TableCell>
+                  <TableCell>Topic</TableCell>
+                  <TableCell>Subject</TableCell>
+                  <TableCell>Document Type</TableCell>
+                  <TableCell>Academic Level</TableCell>
+                  <TableCell>Dead Line</TableCell>
+                  <TableCell>Order Date</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {orders.slice(0, limit).map((customer) => (
+                  <TableRow
+                    hover
+                    key={customer._id}
+                    selected={selectedCustomerIds.indexOf(customer._id) !== -1}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={
+                          selectedCustomerIds.indexOf(customer._id) !== -1
+                        }
+                        onChange={(event) => handleSelectOne(event, customer._id)}
+                        value="true"
+                      />
+                    </TableCell>
+                    <TableCell
+                      component={Link}
+                      to={`/app/order/${customer._id}/`}
+                    >
+                      <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                        <Typography color="textPrimary" variant="body1">
+                          {customer.topic}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      component={Link}
+                      to={`/app/order/${customer._id}/`}
+                    >
+                      {customer.subject}
+                    </TableCell>
+                    <TableCell
+                      component={Link}
+                      to={`/app/order/${customer._id}/`}
+                    >
+                      {customer.documentType}
+                    </TableCell>
+                    <TableCell
+                      component={Link}
+                      to={`/app/order/${customer._id}/`}
+                    >
+                      {customer.academicLevel}
+                    </TableCell>
+                    <TableCell
+                      component={Link}
+                      to={`/app/order/${customer._id}/`}
+                    >
+                      {customer.deadLine}
+                    </TableCell>
+                    <TableCell
+                      component={Link}
+                      to={`/app/order/${customer._id}/`}
+                    >
+                      {moment(customer.createdOn).format('DD-MM-YYYY')}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <CircularProgress />
+          )}
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={orders.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[2, 10, 25]}
-      />
+      {totalDocs && (
+        <TablePagination
+          component="div"
+          count={totalDocs}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleLimitChange}
+          page={page}
+          rowsPerPage={limit}
+          rowsPerPageOptions={[2, 3, 5]}
+        />
+      )}
     </Card>
   );
 };
 
 OrderListResults.propTypes = {
-  orders: PropTypes.array.isRequired,
-  handlePageChange: PropTypes.func,
-  handleLimitChange: PropTypes.func,
-  page: PropTypes.number,
-  limit: PropTypes.number
+  ordersData: PropTypes.array.isRequired
 };
 
 export default OrderListResults;

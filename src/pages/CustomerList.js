@@ -9,7 +9,7 @@ import { fetchUsers } from 'src/services/CustomerService';
 const CustomerList = () => {
   const [customers, setCustomers] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [limit, setLimit] = useState(2);
+  const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
 
   const handleLimitChange = (event) => {

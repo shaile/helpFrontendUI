@@ -11,6 +11,7 @@ import ProductList from 'src/pages/ProductList';
 import Register from 'src/pages/Register';
 import Settings from 'src/pages/Settings';
 import OrderList from 'src/pages/OrderList';
+import OrderDetails from './pages/OrderDetails';
 
 const routes = ({ token, setToken }) => [
   {
@@ -23,6 +24,7 @@ const routes = ({ token, setToken }) => [
       { path: 'products', element: <ProductList /> },
       { path: 'settings', element: <Settings /> },
       { path: 'orders/:userId', element: <OrderList /> },
+      { path: 'order/:oid', element: <OrderDetails /> },
       { path: 'orders', element: <OrderList /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
